@@ -67,8 +67,8 @@
     <details>
       <summary>進階選項（第一次快算可以不填）</summary>
       <div class="details-body fields">
-        <div class="field"><label>出生年次（民國，選填）</label><div class="hint">用來更準確判斷勞保法定請領年齡；沒填時會依目前年齡概估。</div><input id="birthROC" type="number" min="20" max="120" step="1" placeholder="例如：70"></div>
-        <div class="field"><label>預計勞保請領年齡（選填）</label><div class="hint">留空時先以退休年齡估算；系統會依概估法定年齡計入提前減額或延後增額。</div><input id="laborClaimAge" type="number" min="50" max="90" step="0.1" placeholder="例如：65 歲"></div>
+        <div class="field"><label>出生年次（民國，選填）</label><div class="hint">用來判斷勞保法定請領年齡與提前／延後比例；未填時不套用增減給。</div><input id="birthROC" type="number" min="20" max="120" step="1" placeholder="例如：70"></div>
+        <div class="field"><label>預計勞保請領年齡（選填）</label><div class="hint">留空時先以退休年齡作為請領年齡；需同時填出生年次，才會套用提前減額或延後增額。</div><input id="laborClaimAge" type="number" min="50" max="90" step="0.1" placeholder="例如：65 歲"></div>
         <div class="field"><label>勞退自提比例</label><div class="hint">沒有自提填 0；有自提可填 1～6%。</div><input id="selfContribution" type="number" min="0" max="6" step="0.5" value="0" placeholder="例如：6%"></div>
         <div class="field"><label>勞退累積年化收益假設</label><div class="hint">僅用於進階情境；第一次快算可維持 0%。</div><input id="pensionReturn" type="number" min="0" max="15" step="0.1" value="0" placeholder="例如：3%"></div>
         <div class="field"><label>國保 A 式資格</label><div class="hint">若同時估算勞保老年年金，系統會依現行規定自動改用 B 式；其他不得用 A 式情況也可手動選 B 式。</div><select id="nationalMode"><option value="best">一般情況：A／B 擇優</option><option value="b">只用 B 式</option></select></div>
@@ -125,7 +125,7 @@
     <p>勞保、勞退及國民年金試算均依使用者自行輸入資料與現行公開制度進行概略估算。勞退首期月退休金方向估算採現行公告之 111 年全國簡易生命表平均餘命及 1.1473% 利率基礎；相關生命表、平均餘命、利率及金額依法會定期檢討。實際請領資格、法定請領年齡、年資、投保薪資、個人專戶本金及收益與核定金額，均應以勞動部勞工保險局及相關主管機關之最新規定與正式核定結果為準。</p>
     <p>報酬率、通膨率及未來金額均屬情境假設，不代表未來績效或保證結果；投資可能產生損失。如涉及特定商品、保險契約、投資決策、稅務或法律問題，應另行閱讀正式契約／公開說明文件，並視需要洽詢具相關資格之專業人員。</p>
     <p>本工具不建立帳號、不自動將輸入資料上傳至雲端，也不自動建立客戶檔案。</p>
-    <p>官方制度參考：<a href="https://www.bli.gov.tw/0004857.html" target="_blank" rel="noopener">勞保老年年金給付標準</a>・<a href="https://www.bli.gov.tw/0018437.html" target="_blank" rel="noopener">勞退月退休金計算基礎</a>・<a href="https://www.bli.gov.tw/0014336.html" target="_blank" rel="noopener">國保老年年金給付金額</a></p>
+    <p>官方制度參考：<a href="https://www.bli.gov.tw/0019825.html" target="_blank" rel="noopener">勞保老年年金給付標準</a>・<a href="https://www.bli.gov.tw/0018437.html" target="_blank" rel="noopener">勞退月退休金計算基礎</a>・<a href="https://www.bli.gov.tw/0014336.html" target="_blank" rel="noopener">國保老年年金給付金額</a></p>
   </footer>
 </main>
 <div id="toast" class="toast"></div>
