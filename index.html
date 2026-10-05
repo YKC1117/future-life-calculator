@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#9b5d51" />
+  <meta name="description" content="未來生活試算：快速估算勞保、勞退、國民年金退休收入，以及退休生活缺口與長期準備方向。" />
+  <title>未來生活試算｜退休收入與準備</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <h1>未來生活試算</h1>
+    <p>把退休後可能有的收入、生活需要與準備方向，用簡單數字先看清楚。</p>
+  </header>
+
+  <section class="intro">
+    <div class="intro-top"><span class="intro-kicker">退休收入估算</span><h2>三大退休收入來源，一起納入規劃</h2></div>
+    <p><strong>整合勞保老年給付、勞工退休金（新制）與國民年金，</strong>協助快速估算退休後每月可能可領金額，再進一步看看與理想退休生活之間還差多少。</p>
+    <div class="chips"><span class="chip">勞保老年給付</span><span class="chip">勞工退休金（新制）</span><span class="chip">國民年金</span></div>
+    <small>所有數字皆為試算參考。實際請領資格、計算基礎與核定金額，仍以勞動部勞工保險局及相關主管機關最新規定與正式核定結果為準。</small>
+  </section>
+
+  <nav class="progress no-print">
+    <a href="#step1">1. 退休收入</a><a href="#step2">2. 生活缺口</a><a href="#step3">3. 未來準備</a><a href="#step4">4. 重點整理</a>
+  </nav>
+
+  <section id="step1" class="card">
+    <span class="step">STEP 1</span>
+    <h2>退休後，每月大概可以領多少？</h2>
+    <p class="sub">先選擇適用的退休收入來源。不適用的項目可以直接關閉。</p>
+    <div class="base-fields">
+      <div class="field"><label>目前年齡</label><div class="hint">用來估算距離退休還有幾年。</div><input id="age" type="number" min="18" max="90" placeholder="例如：45"></div>
+      <div class="field"><label>預計退休年齡</label><div class="hint">填自己希望大約幾歲退休。</div><input id="retireAge" type="number" min="50" max="90" placeholder="例如：65"></div>
+    </div>
+
+    <div class="source-grid">
+      <article class="source" id="laborInsuranceBox">
+        <div class="source-head"><strong>勞保老年年金</strong><label class="switch"><input id="useLaborInsurance" type="checkbox" checked>納入</label></div>
+        <div class="source-body">
+          <div class="field"><label>平均月投保薪資</label><div class="hint">不知道精確值，可先用接近的投保薪資估算。</div><input id="laborSalary" type="number" min="0" step="100" placeholder="例如：45,800 元"></div>
+          <div class="field"><label>勞保年資</label><div class="hint">填預估退休時累積的勞保年資。</div><input id="laborYears" type="number" min="0" max="60" step="0.1" placeholder="例如：30 年"></div>
+        </div>
+      </article>
+
+      <article class="source" id="laborPensionBox">
+        <div class="source-head"><strong>勞退新制</strong><label class="switch"><input id="useLaborPension" type="checkbox" checked>納入</label></div>
+        <div class="source-body">
+          <div class="field"><label>目前勞退專戶</label><div class="hint">不知道可先填 0；有查到專戶金額就直接填入。</div><input id="pensionBalance" type="number" min="0" step="10000" placeholder="例如：500,000 元"></div>
+          <div class="field"><label>目前月提繳工資</label><div class="hint">快估先以雇主提繳 6% 持續累積，不計未來收益。</div><input id="pensionWage" type="number" min="0" step="100" placeholder="例如：45,800 元"></div>
+        </div>
+      </article>
+
+      <article class="source off" id="nationalPensionBox">
+        <div class="source-head"><strong>國民年金</strong><label class="switch"><input id="useNationalPension" type="checkbox">納入</label></div>
+        <div class="source-body">
+          <div class="field"><label>國保年資</label><div class="hint">填預估 65 歲時累積的國民年金保險年資。</div><input id="nationalYears" type="number" min="0" max="60" step="0.1" placeholder="例如：10 年"></div>
+        </div>
+      </article>
+    </div>
+
+    <details>
+      <summary>進階選項（第一次快算可以不填）</summary>
+      <div class="details-body fields">
+        <div class="field"><label>勞保提前／延後請領</label><div class="hint">0 = 不調整；提前為負數、延後為正數，最多 ±5 年。</div><input id="laborAdjustYears" type="number" min="-5" max="5" step="0.0833" value="0" placeholder="例如：-2 或 3"></div>
+        <div class="field"><label>勞退自提比例</label><div class="hint">沒有自提填 0；有自提可填 1～6%。</div><input id="selfContribution" type="number" min="0" max="6" step="0.5" value="0" placeholder="例如：6%"></div>
+        <div class="field"><label>勞退累積年化收益假設</label><div class="hint">僅用於進階情境；第一次快算可維持 0%。</div><input id="pensionReturn" type="number" min="0" max="15" step="0.1" value="0" placeholder="例如：3%"></div>
+        <div class="field"><label>國保 A 式資格</label><div class="hint">若有不得選 A 式的情況，可改成「只用 B 式」。</div><select id="nationalMode"><option value="best">一般快估：A／B 擇優</option><option value="b">只用 B 式</option></select></div>
+      </div>
+    </details>
+    <div class="btn-row"><button class="btn primary" id="calcIncome">立即試算退休收入</button></div>
+    <div id="incomeResult" class="result"></div>
+  </section>
+
+  <section id="step2" class="card green">
+    <span class="step">STEP 2</span>
+    <h2>和想要的退休生活，還差多少？</h2>
+    <p class="sub">不用先想得很精準，用今天的生活感覺估一個每月需要就可以。</p>
+    <div class="fields">
+      <div class="field"><label>退休後每月想用多少</label><div class="hint">包含生活、醫療、休閒等，每月大概需要的金額。</div><input id="desiredSpend" type="number" min="0" step="1000" placeholder="例如：50,000 元"></div>
+      <div class="field"><label>其他每月固定收入</label><div class="hint">例如月退、公保、租金、商業年金等；沒有可填 0。</div><input id="otherIncome" type="number" min="0" step="1000" placeholder="例如：10,000 元"></div>
+    </div>
+    <details>
+      <summary>想看通膨後的生活費？</summary>
+      <div class="details-body"><div class="field"><label>長期通膨率</label><div class="hint">若填 2%，會將今天的生活費換算到預計退休時。</div><input id="inflationRate" type="number" min="0" max="10" step="0.1" value="0" placeholder="例如：2%"></div></div>
+    </details>
+    <div class="btn-row"><button class="btn primary" id="calcGap">試算退休生活缺口</button></div>
+    <div id="gapResult" class="result"></div>
+  </section>
+
+  <section id="step3" class="card gold">
+    <span class="step">STEP 3</span>
+    <h2>現在開始準備，未來大概會有多少？</h2>
+    <p class="sub">用一個簡單情境感受「時間＋持續準備」的效果，不代表保證報酬。</p>
+    <div class="fields">
+      <div class="field"><label>目前已準備金額</label><div class="hint">為退休或長期目標已經保留的資金。</div><input id="currentReserve" type="number" min="0" step="10000" placeholder="例如：500,000 元"></div>
+      <div class="field"><label>每月持續準備</label><div class="hint">填每月可以穩定準備的金額。</div><input id="monthlyReserve" type="number" min="0" step="1000" placeholder="例如：10,000 元"></div>
+      <div class="field"><label>準備年數</label><div class="hint">有完成 STEP 1 時，可直接使用距離退休的年數。</div><input id="reserveYears" type="number" min="1" max="60" placeholder="例如：20 年"></div>
+      <div class="field"><label>預估年化報酬率</label><div class="hint">只是情境假設，不代表實際或保證報酬。</div><input id="reserveRate" type="number" min="0" max="20" step="0.1" placeholder="例如：4%"></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" id="calcReserve">試算未來準備</button></div>
+    <div id="reserveResult" class="result"></div>
+  </section>
+
+  <section id="step4" class="card">
+    <div class="report-head no-print">
+      <div><span class="step">STEP 4</span><h2>試算重點整理</h2><p class="sub">完成多少就整理多少，不必每一區都填。</p></div>
+      <div class="field"><label>稱呼（選填）</label><div class="hint">只會出現在這次整理內容。</div><input id="clientName" type="text" maxlength="30" placeholder="例如：王老師"></div>
+    </div>
+    <div class="print-only"><h1>未來生活試算重點</h1><p id="printMeta"></p></div>
+    <div id="summaryContent" class="summary-grid"><div class="empty">有填多少就整理多少；不需要把所有欄位都填完。</div></div>
+    <div class="btn-row no-print"><button class="btn primary" id="refreshSummaryBtn">整理目前已填資料</button><button class="btn" id="printBtn">下載／儲存 PDF</button><button class="btn" id="copyBtn">複製重點</button><button class="btn" id="downloadBtn">下載 HTML</button></div>
+    <p class="sub no-print" style="margin-top:12px;margin-bottom:0">PDF 會使用手機、平板或電腦的列印功能產生，只整理目前已填寫與已完成試算的內容。</p>
+  </section>
+
+  <footer class="disclaimer">
+    <h3>重要說明與免責聲明</h3>
+    <p><strong>本工具僅供一般退休與財務觀念整理、簡易試算及溝通參考，並非投資建議、投資顧問服務、招攬、勸誘、要約或保證收益，亦不構成任何特定金融商品、保險商品、證券或投資標的之推薦。</strong></p>
+    <p>勞保、勞退及國民年金試算均依使用者自行輸入資料與現行公開制度進行概略估算；簡易模式可能採用較容易理解的假設，例如勞退月領以概略分配方式呈現，並非正式核定公式。實際請領資格、法定請領年齡、年資、投保薪資、個人專戶本金及收益、年金生命表、利率及核定金額，均應以勞動部勞工保險局及相關主管機關之最新規定與正式核定結果為準。</p>
+    <p>報酬率、通膨率及未來金額均屬情境假設，不代表未來績效或保證結果；投資可能產生損失。如涉及特定商品、保險契約、投資決策、稅務或法律問題，應另行閱讀正式契約／公開說明文件，並視需要洽詢具相關資格之專業人員。</p>
+    <p>本工具不建立帳號、不自動將輸入資料上傳至雲端，也不自動建立客戶檔案。</p>
+  </footer>
+</main>
+<div id="toast" class="toast"></div>
+<script src="./app.js"></script>
+</body>
+</html>
