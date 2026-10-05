@@ -76,7 +76,9 @@
           }
         }else{
           const birthROC=filled('birthROC')?N('birthROC'):null;
-          laborLegalAge=legalLaborAge(birthROC);
+          const approxBirthROC=birthROC===null && age!==null ? (new Date().getFullYear()-1911-age) : null;
+          laborLegalAge=legalLaborAge(birthROC??approxBirthROC);
+          if(birthROC===null && Number.isFinite(approxBirthROC)) notes.push(`未填出生年次，先依目前年齡概估約為民國 ${approxBirthROC} 年次；若生日尚未到，實際年次可能差 1 年。`);
           laborClaimAge=filled('laborClaimAge')?N('laborClaimAge'):retireAge;
           let effectiveClaimAge=laborClaimAge;
           let adjust=0;
@@ -90,7 +92,7 @@
               adjust=clamp(laborClaimAge-laborLegalAge,-5,5);
             }
           }else{
-            notes.push('未填出生年次，勞保金額暫不套用提前減給／延後增給；若要更接近實際請領情況，可在進階選項補上出生年次。');
+            notes.push('目前資料不足以判斷勞保法定請領年齡，因此暫不套用提前減給／延後增給；可補上目前年齡或出生年次。');
           }
           laborAdjYears=adjust;
           laborStartAge=Number.isFinite(effectiveClaimAge)?effectiveClaimAge:(retireAge??laborLegalAge);
@@ -206,11 +208,13 @@
 
   function renderSummary(){
     const parts=[];
-    const incomeInputs=['age','retireAge','laborSalary','laborYears','pensionBalance','pensionWage','pensionYears','nationalYears'].some(filled);
+    const incomeInputs=['age','retireAge','birthROC','laborClaimAge','laborSalary','laborYears','pensionBalance','pensionWage','pensionYears','nationalYears'].some(filled);
     if(state.income || incomeInputs){
       const lines=[];const s=state.income;
       if(filled('age'))lines.push(`目前年齡：${N('age')} 歲。`);
       if(filled('retireAge'))lines.push(`預計退休年齡：${N('retireAge')} 歲。`);
+      if(filled('birthROC'))lines.push(`出生年次（試算用）：民國 ${N('birthROC')} 年。`);
+      if(filled('laborClaimAge'))lines.push(`預計勞保請領年齡：${N('laborClaimAge')} 歲。`);
       if(s?.yearsToRetire!==null && s?.yearsToRetire!==undefined)lines.push(`距離預計退休約 ${s.yearsToRetire} 年。`);
       if($('useLaborInsurance').checked && (filled('laborSalary')||filled('laborYears')||Number.isFinite(s?.labor))){
         const raw=[];if(filled('laborSalary'))raw.push(`最高60個月平均投保薪資 ${money(N('laborSalary'))}`);if(filled('laborYears'))raw.push(`年資 ${N('laborYears')} 年`);
@@ -265,8 +269,32 @@
   function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('重點已複製')}catch(e){toast('請手動複製重點')}ta.remove()}
   function downloadReport(){renderSummary();const name=$('clientName').value.trim()||'試算';const content=$('summaryContent').innerHTML;const disclaimer=document.querySelector('.disclaimer').outerHTML;const html=`<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><title>${name}－未來生活試算</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;max-width:820px;margin:36px auto;padding:0 18px;color:#3e342f;line-height:1.7}.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}.summary-section,.disclaimer{border:1px solid #e7ddd4;border-radius:14px;padding:14px}.summary-section h3,.disclaimer h3{margin-top:0}.summary-section li,.disclaimer p{font-size:13px}.disclaimer{margin-top:16px;background:#f7f6f5}@media(max-width:700px){.summary{grid-template-columns:1fr}}</style><h1>未來生活試算重點</h1><p>${name}｜${new Date().toLocaleDateString('zh-TW')}</p><div class="summary">${content}</div>${disclaimer}</html>`;const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${name}-未來生活試算.html`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);toast('已產生報告')}
 
-  $('calcIncome').addEventListener('click',calcIncome);$('calcGap').addEventListener('click',calcGap);$('calcReserve').addEventListener('click',calcReserve);$('clientName').addEventListener('input',renderSummary);$('refreshSummaryBtn').addEventListener('click',()=>{renderSummary();toast('已依目前資料整理')});$('printBtn').addEventListener('click',()=>{renderSummary();window.print()});$('copyBtn').addEventListener('click',copySummary);$('downloadBtn').addEventListener('click',downloadReport);
-  document.querySelectorAll('input,select').forEach(el=>{if(el.id!=='clientName')el.addEventListener('input',()=>renderSummary())});
+  const incomeInputIds=['age','retireAge','laborSalary','laborYears','pensionBalance','pensionWage','pensionYears','nationalYears','birthROC','laborClaimAge','selfContribution','pensionReturn','nationalMode','useLaborInsurance','useLaborPension','useNationalPension'];
+  const gapInputIds=['desiredSpend','otherIncome','inflationRate'];
+  const reserveInputIds=['currentReserve','monthlyReserve','reserveYears','reserveRate'];
+  const hasAny=ids=>ids.some(filled);
+  const hideResult=id=>{const el=$(id);if(el)el.classList.remove('show')};
+  function invalidateFor(id){
+    if(incomeInputIds.includes(id)){state.income=null;state.gap=null;state.reserve=null;hideResult('incomeResult');hideResult('gapResult');hideResult('reserveResult')}
+    if(gapInputIds.includes(id)){state.gap=null;state.reserve=null;hideResult('gapResult');hideResult('reserveResult')}
+    if(reserveInputIds.includes(id)){state.reserve=null;hideResult('reserveResult')}
+  }
+  function refreshAvailable(showToast=true){
+    if(hasAny(['age','retireAge','laborSalary','laborYears','pensionBalance','pensionWage','pensionYears','nationalYears']))calcIncome();
+    if(hasAny(gapInputIds))calcGap();
+    if(hasAny(['currentReserve','monthlyReserve','reserveRate']))calcReserve();
+    renderSummary();
+    if(showToast)toast('已依目前資料整理');
+  }
+
+  const originalCalcGap=calcGap;
+  calcGap=function(){
+    if(!state.income && hasAny(['age','retireAge','laborSalary','laborYears','pensionBalance','pensionWage','pensionYears','nationalYears']))calcIncome();
+    return originalCalcGap();
+  };
+
+  $('calcIncome').addEventListener('click',calcIncome);$('calcGap').addEventListener('click',calcGap);$('calcReserve').addEventListener('click',calcReserve);$('clientName').addEventListener('input',renderSummary);$('refreshSummaryBtn').addEventListener('click',()=>refreshAvailable(true));$('printBtn').addEventListener('click',()=>{refreshAvailable(false);window.print()});$('copyBtn').addEventListener('click',()=>{refreshAvailable(false);copySummary()});$('downloadBtn').addEventListener('click',()=>{refreshAvailable(false);downloadReport()});
+  document.querySelectorAll('input,select').forEach(el=>{if(el.id!=='clientName')el.addEventListener('input',()=>{invalidateFor(el.id);renderSummary()})});
   if('serviceWorker' in navigator && (location.protocol==='https:'||location.protocol==='http:'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
   renderSummary();
 })();
