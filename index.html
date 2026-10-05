@@ -42,8 +42,8 @@
       <article class="source" id="laborInsuranceBox">
         <div class="source-head"><strong>勞保老年年金</strong><label class="switch"><input id="useLaborInsurance" type="checkbox" checked>納入</label></div>
         <div class="source-body">
-          <div class="field"><label>平均月投保薪資</label><div class="hint">不知道精確值，可先用接近的投保薪資估算。</div><input id="laborSalary" type="number" min="0" step="100" placeholder="例如：45,800 元"></div>
-          <div class="field"><label>勞保年資</label><div class="hint">填預估退休時累積的勞保年資。</div><input id="laborYears" type="number" min="0" max="60" step="0.1" placeholder="例如：30 年"></div>
+          <div class="field"><label>最高 60 個月平均投保薪資</label><div class="hint">勞保老年年金以加保期間最高 60 個月平均投保薪資計算；不知道可先抓接近值。</div><input id="laborSalary" type="number" min="0" step="100" placeholder="例如：45,800 元"></div>
+          <div class="field"><label>勞保年資</label><div class="hint">填預估請領時累積的勞保年資；月領原則上需滿 15 年。</div><input id="laborYears" type="number" min="0" max="60" step="0.1" placeholder="例如：30 年"></div>
         </div>
       </article>
 
@@ -51,7 +51,8 @@
         <div class="source-head"><strong>勞退新制</strong><label class="switch"><input id="useLaborPension" type="checkbox" checked>納入</label></div>
         <div class="source-body">
           <div class="field"><label>目前勞退專戶</label><div class="hint">不知道可先填 0；有查到專戶金額就直接填入。</div><input id="pensionBalance" type="number" min="0" step="10000" placeholder="例如：500,000 元"></div>
-          <div class="field"><label>目前月提繳工資</label><div class="hint">快估先以雇主提繳 6% 持續累積，不計未來收益。</div><input id="pensionWage" type="number" min="0" step="100" placeholder="例如：45,800 元"></div>
+          <div class="field"><label>目前月提繳工資</label><div class="hint">快估先以目前工資與雇主提繳 6% 持續累積；進階可加入自提與收益假設。</div><input id="pensionWage" type="number" min="0" step="100" placeholder="例如：45,800 元"></div>
+          <div class="field"><label>預估退休時勞退提繳年資</label><div class="hint">滿 15 年以上，原則上可選月退休金；未滿 15 年通常為一次退休金。</div><input id="pensionYears" type="number" min="0" max="60" step="0.1" placeholder="例如：25 年"></div>
         </div>
       </article>
 
@@ -66,10 +67,11 @@
     <details>
       <summary>進階選項（第一次快算可以不填）</summary>
       <div class="details-body fields">
-        <div class="field"><label>勞保提前／延後請領</label><div class="hint">0 = 不調整；提前為負數、延後為正數，最多 ±5 年。</div><input id="laborAdjustYears" type="number" min="-5" max="5" step="0.0833" value="0" placeholder="例如：-2 或 3"></div>
+        <div class="field"><label>出生年次（民國，選填）</label><div class="hint">用來更準確判斷勞保法定請領年齡；沒填時會依目前年齡概估。</div><input id="birthROC" type="number" min="20" max="120" step="1" placeholder="例如：70"></div>
+        <div class="field"><label>預計勞保請領年齡（選填）</label><div class="hint">留空時先以退休年齡估算；系統會依概估法定年齡計入提前減額或延後增額。</div><input id="laborClaimAge" type="number" min="50" max="90" step="0.1" placeholder="例如：65 歲"></div>
         <div class="field"><label>勞退自提比例</label><div class="hint">沒有自提填 0；有自提可填 1～6%。</div><input id="selfContribution" type="number" min="0" max="6" step="0.5" value="0" placeholder="例如：6%"></div>
         <div class="field"><label>勞退累積年化收益假設</label><div class="hint">僅用於進階情境；第一次快算可維持 0%。</div><input id="pensionReturn" type="number" min="0" max="15" step="0.1" value="0" placeholder="例如：3%"></div>
-        <div class="field"><label>國保 A 式資格</label><div class="hint">若有不得選 A 式的情況，可改成「只用 B 式」。</div><select id="nationalMode"><option value="best">一般快估：A／B 擇優</option><option value="b">只用 B 式</option></select></div>
+        <div class="field"><label>國保 A 式資格</label><div class="hint">若同時估算勞保老年年金，系統會依現行規定自動改用 B 式；其他不得用 A 式情況也可手動選 B 式。</div><select id="nationalMode"><option value="best">一般情況：A／B 擇優</option><option value="b">只用 B 式</option></select></div>
       </div>
     </details>
     <div class="btn-row"><button class="btn primary" id="calcIncome">立即試算退休收入</button></div>
@@ -120,9 +122,10 @@
   <footer class="disclaimer">
     <h3>重要說明與免責聲明</h3>
     <p><strong>本工具僅供一般退休與財務觀念整理、簡易試算及溝通參考，並非投資建議、投資顧問服務、招攬、勸誘、要約或保證收益，亦不構成任何特定金融商品、保險商品、證券或投資標的之推薦。</strong></p>
-    <p>勞保、勞退及國民年金試算均依使用者自行輸入資料與現行公開制度進行概略估算；簡易模式可能採用較容易理解的假設，例如勞退月領以概略分配方式呈現，並非正式核定公式。實際請領資格、法定請領年齡、年資、投保薪資、個人專戶本金及收益、年金生命表、利率及核定金額，均應以勞動部勞工保險局及相關主管機關之最新規定與正式核定結果為準。</p>
+    <p>勞保、勞退及國民年金試算均依使用者自行輸入資料與現行公開制度進行概略估算。勞退首期月退休金方向估算採現行公告之 111 年全國簡易生命表平均餘命及 1.1473% 利率基礎；相關生命表、平均餘命、利率及金額依法會定期檢討。實際請領資格、法定請領年齡、年資、投保薪資、個人專戶本金及收益與核定金額，均應以勞動部勞工保險局及相關主管機關之最新規定與正式核定結果為準。</p>
     <p>報酬率、通膨率及未來金額均屬情境假設，不代表未來績效或保證結果；投資可能產生損失。如涉及特定商品、保險契約、投資決策、稅務或法律問題，應另行閱讀正式契約／公開說明文件，並視需要洽詢具相關資格之專業人員。</p>
     <p>本工具不建立帳號、不自動將輸入資料上傳至雲端，也不自動建立客戶檔案。</p>
+    <p>官方制度參考：<a href="https://www.bli.gov.tw/0004857.html" target="_blank" rel="noopener">勞保老年年金給付標準</a>・<a href="https://www.bli.gov.tw/0018437.html" target="_blank" rel="noopener">勞退月退休金計算基礎</a>・<a href="https://www.bli.gov.tw/0014336.html" target="_blank" rel="noopener">國保老年年金給付金額</a></p>
   </footer>
 </main>
 <div id="toast" class="toast"></div>
