@@ -10,6 +10,7 @@
   <link rel="icon" href="./icon-192.png" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./extras.css">
 </head>
 <body>
 <main class="shell">
@@ -108,6 +109,49 @@
     <div id="reserveResult" class="result"></div>
   </section>
 
+  <section class="optional-tools no-print" aria-labelledby="moreToolsTitle">
+    <div class="optional-head">
+      <div><span class="optional-kicker">其他試算</span><h2 id="moreToolsTitle">需要時再打開</h2><p>平常收起來，不影響主要退休試算流程。</p></div>
+    </div>
+    <div class="tool-stack">
+      <details id="expenseTool" class="mini-tool">
+        <summary><div class="tool-summary"><div class="tool-title"><div class="tool-icon">帳</div><div class="tool-copy"><strong>人生必要開銷</strong><small>人生帳本｜快速看看生活基本盤有多大</small></div></div><span class="tool-open">打開試算</span></div></summary>
+        <div class="tool-body">
+          <p class="tool-note">不必一次填完，有多少資料就先算多少。長期總額只是用今天金額直算，方便快速建立概念。</p>
+          <div class="tool-fields">
+            <div class="field"><label>目前年齡（選填）</label><div class="hint">若上方已填目前年齡，打開時會自動帶入。</div><input id="lifeCurrentAge" type="number" min="18" max="100" placeholder="例如：45"></div>
+            <div class="field"><label>想估算到幾歲（選填）</label><div class="hint">用來粗估從現在到該年齡的總生活開銷。</div><input id="lifeUntilAge" type="number" min="19" max="110" value="85" placeholder="例如：85"></div>
+          </div>
+          <div class="expense-grid" style="margin-top:16px">
+            <div class="field"><label>居住</label><div class="hint">房貸、房租、管理費等。</div><input id="lifeHousing" type="number" min="0" step="1000" placeholder="每月金額"></div>
+            <div class="field"><label>飲食</label><div class="hint">三餐、日用品等。</div><input id="lifeFood" type="number" min="0" step="1000" placeholder="每月金額"></div>
+            <div class="field"><label>交通</label><div class="hint">車貸、油錢、通勤等。</div><input id="lifeTransport" type="number" min="0" step="1000" placeholder="每月金額"></div>
+            <div class="field"><label>保險／醫療</label><div class="hint">保費、醫療與健康支出。</div><input id="lifeInsurance" type="number" min="0" step="1000" placeholder="每月平均"></div>
+            <div class="field"><label>家庭／教育</label><div class="hint">孝親、子女、教育或照顧支出。</div><input id="lifeFamily" type="number" min="0" step="1000" placeholder="每月金額"></div>
+            <div class="field"><label>其他</label><div class="hint">休閒、社交與其他固定支出。</div><input id="lifeOther" type="number" min="0" step="1000" placeholder="每月金額"></div>
+          </div>
+          <div class="tool-actions"><button type="button" class="tool-btn" id="calcExpense">計算人生帳本</button></div>
+          <div id="expenseResult" class="tool-result"></div>
+        </div>
+      </details>
+
+      <details id="compoundTool" class="mini-tool compound">
+        <summary><div class="tool-summary"><div class="tool-title"><div class="tool-icon">↗</div><div class="tool-copy"><strong>複利試算</strong><small>看看你的錢會長多大｜本金＋每月投入</small></div></div><span class="tool-open">打開試算</span></div></summary>
+        <div class="tool-body">
+          <p class="tool-note">如果上方「未來準備」已經填過資料，打開這裡會自動帶入；也可以獨立使用。</p>
+          <div class="tool-fields">
+            <div class="field"><label>目前本金</label><div class="hint">現在已經準備或投入的金額。</div><input id="compoundPrincipal" type="number" min="0" step="10000" placeholder="例如：500,000 元"></div>
+            <div class="field"><label>每月持續投入</label><div class="hint">每月底固定投入的金額。</div><input id="compoundMonthly" type="number" min="0" step="1000" placeholder="例如：10,000 元"></div>
+            <div class="field"><label>累積年數</label><div class="hint">想看看幾年後的結果。</div><input id="compoundYears" type="number" min="1" max="60" step="1" placeholder="例如：20 年"></div>
+            <div class="field"><label>預估年化報酬率</label><div class="hint">只是假設情境，不代表保證報酬。</div><input id="compoundRate" type="number" min="0" max="20" step="0.1" placeholder="例如：4%"></div>
+          </div>
+          <div class="tool-actions"><button type="button" class="tool-btn" id="calcCompound">看看會長多大</button></div>
+          <div id="compoundResult" class="tool-result"></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
   <section id="step4" class="card">
     <div class="report-head no-print">
       <div><span class="step">STEP 4</span><h2>試算重點整理</h2><p class="sub">完成多少就整理多少，不必每一區都填。</p></div>
@@ -131,5 +175,6 @@
 <div id="toast" class="toast"></div>
 <script src="./app.js"></script>
 <script src="./sync.js"></script>
+<script src="./extras.js"></script>
 </body>
 </html>
