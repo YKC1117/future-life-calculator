@@ -58,7 +58,7 @@
 
   window.addEventListener('load',()=>{
     loadScript('./theme.js?v=12','data-theme-loader');
-    loadScript('./employer-rate.js?v=14','data-employer-rate-loader');
+    loadScript('./employer-rate.js?v=15','data-employer-rate-loader');
     loadScript('./pdf.js?v=13','data-pdf-loader');
   },{once:true});
 })();
