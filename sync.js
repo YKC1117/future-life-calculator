@@ -42,4 +42,12 @@
   ['refreshSummaryBtn','printBtn','copyBtn','downloadBtn'].forEach(id=>{
     $(id)?.addEventListener('click',refreshAllAvailable,true);
   });
+
+  window.addEventListener('load',()=>{
+    if(document.querySelector('script[data-theme-loader]'))return;
+    const script=document.createElement('script');
+    script.src='./theme.js';
+    script.dataset.themeLoader='true';
+    document.body.appendChild(script);
+  },{once:true});
 })();
