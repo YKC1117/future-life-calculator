@@ -19,15 +19,9 @@
   </header>
 
   <nav class="tool-tabs no-print" aria-label="試算工具切換">
-    <button class="tool-tab active" type="button" data-tool="retirement" aria-selected="true">
-      <small>STEP 1</small><strong>退休規劃</strong>
-    </button>
-    <button class="tool-tab" type="button" data-tool="life" aria-selected="false">
-      <small>STEP 2</small><strong>人生帳本</strong>
-    </button>
-    <button class="tool-tab" type="button" data-tool="compound" aria-selected="false">
-      <small>STEP 3</small><strong>複利試算</strong>
-    </button>
+    <button class="tool-tab active" type="button" data-tool="retirement" aria-selected="true"><small>STEP 1</small><strong>退休規劃</strong></button>
+    <button class="tool-tab" type="button" data-tool="life" aria-selected="false"><small>STEP 2</small><strong>人生帳本</strong></button>
+    <button class="tool-tab" type="button" data-tool="compound" aria-selected="false"><small>STEP 3</small><strong>複利試算</strong></button>
   </nav>
 
   <section id="panel-retirement" class="tool-panel active" data-panel="retirement">
@@ -63,9 +57,7 @@
 
         <article class="source off" id="nationalPensionBox">
           <div class="source-head"><strong>國民年金</strong><label class="switch"><input id="useNationalPension" type="checkbox">納入</label></div>
-          <div class="source-body">
-            <div class="field"><label>國保年資</label><div class="hint">填預估 65 歲時累積的國民年金保險年資。</div><input id="nationalYears" type="number" min="0" max="60" step="0.1" placeholder="例如：10 年"></div>
-          </div>
+          <div class="source-body"><div class="field"><label>國保年資</label><div class="hint">填預估 65 歲時累積的國民年金保險年資。</div><input id="nationalYears" type="number" min="0" max="60" step="0.1" placeholder="例如：10 年"></div></div>
         </article>
       </div>
 
@@ -138,25 +130,40 @@
       <button type="button" class="text-btn" id="applyLifeIncome">帶入上方總收入</button>
     </details>
 
+    <details class="life-auto life-converter no-print">
+      <summary>不知道總額？用每月／每年支出快速換算</summary>
+      <div class="life-converter-grid">
+        <div class="field"><label>要帶入哪一項</label><select id="lifeConverterTarget">
+          <option value="lifeHousing">居住準備</option><option value="lifeTransport">交通／購車</option><option value="lifeLiving">日常生活開銷</option><option value="lifeFamilyStart">結婚／成家</option><option value="lifeBaby">生育／育兒費用</option><option value="lifeEducation">子女教育金</option><option value="lifeParents">父母孝親／照護</option><option value="lifeMedical">醫療／長照準備</option><option value="lifeLeisure">休閒／旅遊</option><option value="lifeOther">其他人生目標</option>
+        </select></div>
+        <div class="field"><label>支出頻率</label><select id="lifeConverterFrequency"><option value="monthly">每月</option><option value="yearly">每年</option></select></div>
+        <div class="field"><label>每期金額（元）</label><input id="lifeConverterAmount" type="number" min="0" step="1000" placeholder="例如：40,000"></div>
+        <div class="field"><label>持續年數</label><input id="lifeConverterYears" type="number" min="0.1" max="80" step="0.5" placeholder="例如：20"></div>
+      </div>
+      <div class="converter-action"><button type="button" class="text-btn" id="applyLifeExpense">換算後帶入帳本</button><span id="lifeConverterHint">金額會換算成「萬元總額」，原本仍可直接手動修改。</span></div>
+    </details>
+
     <div class="ledger-list" id="ledgerList">
-      <label class="ledger-row"><span class="ledger-no">01</span><strong>買房</strong><span class="ledger-input"><input id="lifeHouse" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">02</span><strong>買車</strong><span class="ledger-input"><input id="lifeCar" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">03</span><strong>生活開銷</strong><span class="ledger-input"><input id="lifeLiving" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">04</span><strong>結婚</strong><span class="ledger-input"><input id="lifeWedding" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">05</span><strong>生小孩費用</strong><span class="ledger-input"><input id="lifeBaby" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">06</span><strong>小孩教育金</strong><span class="ledger-input"><input id="lifeEducation" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">07</span><strong>父母孝養金</strong><span class="ledger-input"><input id="lifeParents" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
-      <label class="ledger-row"><span class="ledger-no">08</span><strong>旅遊金</strong><span class="ledger-input"><input id="lifeTravel" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">01</span><span class="ledger-name"><strong>居住準備</strong><small>買房、頭期、裝潢、修繕或換屋</small></span><span class="ledger-input"><input id="lifeHousing" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">02</span><span class="ledger-name"><strong>交通／購車</strong><small>購車、換車與較大的交通支出</small></span><span class="ledger-input"><input id="lifeTransport" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">03</span><span class="ledger-name"><strong>日常生活開銷</strong><small>飲食、水電、通訊、日用品與日常娛樂</small></span><span class="ledger-input"><input id="lifeLiving" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">04</span><span class="ledger-name"><strong>結婚／成家</strong><small>婚禮、蜜月、家具家電與成家支出</small></span><span class="ledger-input"><input id="lifeFamilyStart" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">05</span><span class="ledger-name"><strong>生育／育兒費用</strong><small>生產、托育與幼兒階段支出</small></span><span class="ledger-input"><input id="lifeBaby" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">06</span><span class="ledger-name"><strong>子女教育金</strong><small>學費、補習、才藝、大學或留學</small></span><span class="ledger-input"><input id="lifeEducation" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">07</span><span class="ledger-name"><strong>父母孝親／照護</strong><small>孝親費、照顧與高齡生活支持</small></span><span class="ledger-input"><input id="lifeParents" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">08</span><span class="ledger-name"><strong>醫療／長照準備</strong><small>自費醫療、健康支出與長期照護</small></span><span class="ledger-input"><input id="lifeMedical" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row"><span class="ledger-no">09</span><span class="ledger-name"><strong>休閒／旅遊</strong><small>旅行、興趣與退休後想保留的生活品質</small></span><span class="ledger-input"><input id="lifeLeisure" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
+      <label class="ledger-row custom-row"><span class="ledger-no">10</span><span class="ledger-name"><input id="lifeOtherName" class="ledger-name-edit" type="text" maxlength="18" value="其他人生目標" aria-label="自訂人生目標名稱"><small>例如進修、創業、孩子留學、夢想基金</small></span><span class="ledger-input"><input id="lifeOther" type="number" min="0" step="1" value="0" inputmode="decimal"><em>萬</em></span></label>
     </div>
 
-    <div class="ledger-sum"><span>八項必要開銷合計</span><strong><span id="lifeExpenseTotal">0</span> 萬元</strong></div>
+    <div class="ledger-sum"><span>十項人生開銷合計</span><strong><span id="lifeExpenseTotal">0</span> 萬元</strong></div>
 
     <div class="net-box">
-      <small>最終淨收入</small>
+      <small>工作收入扣除目前人生規劃後</small>
       <strong><span id="lifeNetTotal">0</span><em>萬元</em></strong>
       <p id="lifeNetHint">填入收入與人生開銷後，這裡會自動更新。</p>
     </div>
-    <p class="panel-footnote">總收入 − 八項人生必要開銷 ＝ 最終淨收入。此頁以概念整理為主，未計入稅負、通膨、薪資成長與投資報酬。</p>
+    <p class="panel-footnote">總收入 − 十項人生規劃支出 ＝ 概略結餘。這是人生資金盤點，不代表實際可支配所得；尚未計入稅負、通膨、薪資成長與投資報酬。</p>
   </section>
 
   <section id="panel-compound" class="tool-panel" data-panel="compound" hidden>
@@ -169,20 +176,11 @@
       <label>重要投入金額</label>
       <div class="principal-input"><span>NT$</span><input id="compoundPrincipal" type="number" min="0" step="1000" value="100000" inputmode="decimal"></div>
       <div class="quick-money no-print">
-        <button type="button" data-principal="100000">10 萬</button>
-        <button type="button" data-principal="300000">30 萬</button>
-        <button type="button" data-principal="500000">50 萬</button>
-        <button type="button" data-principal="1000000">100 萬</button>
-        <button type="button" data-principal="5000000">500 萬</button>
+        <button type="button" data-principal="100000">10 萬</button><button type="button" data-principal="300000">30 萬</button><button type="button" data-principal="500000">50 萬</button><button type="button" data-principal="1000000">100 萬</button><button type="button" data-principal="5000000">500 萬</button>
       </div>
     </div>
 
-    <div class="matrix-wrap">
-      <table class="compound-matrix">
-        <thead><tr><th>年化報酬率</th><th>10 年</th><th>20 年</th><th>30 年</th></tr></thead>
-        <tbody id="compoundMatrixBody"></tbody>
-      </table>
-    </div>
+    <div class="matrix-wrap"><table class="compound-matrix"><thead><tr><th>年化報酬率</th><th>10 年</th><th>20 年</th><th>30 年</th></tr></thead><tbody id="compoundMatrixBody"></tbody></table></div>
 
     <div class="chart-card">
       <div class="chart-title"><h3>滾動比較圖</h3><p>同一筆本金，時間拉長之後，曲線會開始分開。</p></div>
