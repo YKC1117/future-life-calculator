@@ -43,70 +43,104 @@
     $(id)?.addEventListener('click',refreshAllAvailable,true);
   });
 
-  function placeThemePickerInHeader(){
-    const root=document.querySelector('.theme-picker-root');
-    const header=document.querySelector('.site-head');
-    if(!root||!header)return;
-    if(root.parentElement!==header)header.appendChild(root);
-    if(document.getElementById('compactThemePickerStyle'))return;
+  function installSimpleHeaderStyles(){
+    if(document.getElementById('simpleHeaderThemeStyle'))return;
     const style=document.createElement('style');
-    style.id='compactThemePickerStyle';
+    style.id='simpleHeaderThemeStyle';
     style.textContent=`
-      .site-head{position:relative}
-      .site-head .theme-picker-root{
-        position:absolute!important;
-        top:5px!important;
-        right:2px!important;
+      /* 手機與平板不再讓三個工具頁籤懸浮，捲動時跟著頁面走。 */
+      html body.future-life-brand .tool-tabs{
+        position:static!important;
+        top:auto!important;
+        z-index:auto!important;
+        backdrop-filter:none!important;
+        -webkit-backdrop-filter:none!important;
+      }
+      .site-head-toprow{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:10px;
+        width:100%;
+      }
+      .site-head-toprow>h1{min-width:0;flex:1 1 auto}
+      .site-head-toprow .theme-picker-root{
+        position:relative!important;
+        inset:auto!important;
+        top:auto!important;
+        right:auto!important;
         bottom:auto!important;
         left:auto!important;
-        z-index:8!important;
+        z-index:12!important;
         width:auto!important;
         height:auto!important;
-        margin:0!important;
+        margin:1px 0 0!important;
         padding:0!important;
+        flex:0 0 auto;
       }
-      .site-head .theme-picker-btn{
-        width:34px!important;
-        height:34px!important;
-        min-width:34px!important;
-        min-height:34px!important;
+      .site-head-toprow .theme-picker-btn{
+        width:30px!important;
+        height:30px!important;
+        min-width:30px!important;
+        min-height:30px!important;
         padding:0!important;
         margin:0!important;
         display:grid!important;
         place-items:center!important;
         gap:0!important;
-        border-radius:10px!important;
-        box-shadow:0 3px 10px rgba(45,35,31,.10)!important;
+        border-radius:8px!important;
+        box-shadow:none!important;
+        background:transparent!important;
       }
-      .site-head .theme-picker-btn svg{width:15px!important;height:15px!important}
-      .site-head .theme-picker-btn span{display:none!important}
-      .site-head .theme-picker-panel{
-        top:40px!important;
+      .site-head-toprow .theme-picker-btn:hover{background:var(--theme-soft,#f5e8e2)!important}
+      .site-head-toprow .theme-picker-btn svg{width:15px!important;height:15px!important}
+      .site-head-toprow .theme-picker-btn span{display:none!important}
+      .site-head-toprow .theme-picker-panel{
+        position:absolute!important;
+        top:36px!important;
         right:0!important;
         bottom:auto!important;
         left:auto!important;
-        width:232px!important;
+        width:224px!important;
         max-width:calc(100vw - 20px)!important;
         margin:0!important;
-        padding:10px!important;
-        border-radius:15px!important;
+        padding:9px!important;
+        border-radius:13px!important;
         box-sizing:border-box!important;
       }
-      .site-head .theme-picker-title{padding:1px 3px 8px!important;font-size:12px!important}
-      .site-head .theme-picker-title small{font-size:10px!important}
-      .site-head .theme-options{gap:6px!important}
-      .site-head .theme-option{min-height:46px!important;padding:7px!important;border-radius:10px!important}
-      .site-head .theme-option.active{padding:6px!important}
-      .site-head .theme-swatch{width:21px!important;height:21px!important}
+      .site-head-toprow .theme-picker-title{padding:1px 3px 7px!important;font-size:12px!important}
+      .site-head-toprow .theme-picker-title small{font-size:9px!important}
+      .site-head-toprow .theme-options{gap:5px!important}
+      .site-head-toprow .theme-option{min-height:43px!important;padding:6px!important;border-radius:9px!important}
+      .site-head-toprow .theme-option.active{padding:5px!important}
+      .site-head-toprow .theme-swatch{width:19px!important;height:19px!important}
       @media(max-width:560px){
-        .site-head .theme-picker-root{top:2px!important;right:1px!important}
-        .site-head .theme-picker-btn{width:31px!important;height:31px!important;min-width:31px!important;min-height:31px!important;border-radius:9px!important}
-        .site-head .theme-picker-btn svg{width:14px!important;height:14px!important}
-        .site-head .theme-picker-panel{top:37px!important;width:222px!important;max-width:calc(100vw - 18px)!important}
+        .site-head-toprow{gap:7px}
+        .site-head-toprow .theme-picker-root{margin-top:0!important}
+        .site-head-toprow .theme-picker-btn{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;border-radius:7px!important}
+        .site-head-toprow .theme-picker-btn svg{width:13px!important;height:13px!important}
+        .site-head-toprow .theme-picker-panel{top:33px!important;width:216px!important;max-width:calc(100vw - 16px)!important}
       }
-      @media print{.site-head .theme-picker-root{display:none!important}}
+      @media print{.site-head-toprow .theme-picker-root{display:none!important}}
     `;
     document.head.appendChild(style);
+  }
+
+  function placeThemePickerInHeader(){
+    const root=document.querySelector('.theme-picker-root');
+    const header=document.querySelector('.site-head');
+    const title=header?.querySelector('h1');
+    if(!root||!header||!title)return;
+
+    let row=header.querySelector('.site-head-toprow');
+    if(!row){
+      row=document.createElement('div');
+      row.className='site-head-toprow';
+      header.insertBefore(row,title);
+      row.appendChild(title);
+    }
+    row.appendChild(root);
+    installSimpleHeaderStyles();
   }
 
   window.addEventListener('load',()=>{
