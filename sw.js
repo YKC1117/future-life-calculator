@@ -1,37 +1,45 @@
-const CACHE='future-life-v16';
+const CACHE='future-life-v17';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./sync.js','./tools.js','./theme.js','./pdf.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE);
+    await Promise.allSettled(ASSETS.map(async asset=>{
+      const res=await fetch(asset,{cache:'reload'});
+      if(res.ok)await cache.put(asset,res.clone());
+    }));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil(
-    caches.keys()
-      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
-      .then(()=>self.clients.claim())
-  );
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch',event=>{
   const req=event.request;
   if(req.method!=='GET')return;
 
-  event.respondWith(
-    fetch(req)
-      .then(res=>{
-        if(res&&res.ok){
-          const copy=res.clone();
-          caches.open(CACHE).then(c=>c.put(req,copy));
-        }
-        return res;
-      })
-      .catch(async()=>{
-        const cached=await caches.match(req);
-        if(cached)return cached;
-        // 只有真正的頁面導覽才回首頁；JS/CSS 等資源失敗時不可拿 HTML 冒充，避免整站腳本報錯。
-        if(req.mode==='navigate')return caches.match('./index.html');
-        return Response.error();
-      })
-  );
+  event.respondWith((async()=>{
+    try{
+      const res=await fetch(req);
+      if(res&&res.ok){
+        const cache=await caches.open(CACHE);
+        cache.put(req,res.clone()).catch(()=>{});
+      }
+      return res;
+    }catch{
+      const cached=await caches.match(req);
+      if(cached)return cached;
+      if(req.mode==='navigate'){
+        const home=await caches.match('./index.html');
+        if(home)return home;
+      }
+      return Response.error();
+    }
+  })());
 });
