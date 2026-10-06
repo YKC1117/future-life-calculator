@@ -48,11 +48,16 @@
   guard.textContent=`html body .tool-tabs{position:static!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;z-index:auto!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}`;
   document.head.appendChild(guard);
 
-  window.addEventListener('load',()=>{
-    if(document.querySelector('script[data-theme-loader]'))return;
+  function loadScript(src,dataKey){
+    if(document.querySelector(`script[${dataKey}]`))return;
     const script=document.createElement('script');
-    script.src='./theme.js?v=12';
-    script.dataset.themeLoader='true';
+    script.src=src;
+    script.setAttribute(dataKey,'true');
     document.body.appendChild(script);
+  }
+
+  window.addEventListener('load',()=>{
+    loadScript('./theme.js?v=12','data-theme-loader');
+    loadScript('./pdf.js?v=13','data-pdf-loader');
   },{once:true});
 })();
