@@ -4,6 +4,7 @@
   const $=id=>document.getElementById(id);
   const STANDARD_RATE=6;
   let restoring=false;
+  let originalSelfValue=null;
 
   function toast(text){
     const el=$('toast');
@@ -72,28 +73,43 @@
     sub.textContent=`${base}｜雇主提繳 ${rate()}%＋自提 ${selfRate()}%`;
   }
 
+  function decorateSummary(){
+    const sections=[...document.querySelectorAll('#summaryContent .summary-section')];
+    const retirement=sections.find(section=>section.querySelector('h3')?.textContent?.includes('退休收入'));
+    if(!retirement)return;
+    const laborPensionLine=[...retirement.querySelectorAll('li')].find(li=>li.textContent.trim().startsWith('勞退：'));
+    if(!laborPensionLine)return;
+    const clean=laborPensionLine.textContent.replace(/（雇主提繳[^）]*）/g,'').trim();
+    laborPensionLine.textContent=`${clean}（雇主提繳 ${rate()}%、個人自提 ${selfRate()}%）`;
+  }
+
   function installCalculationBridge(){
     const btn=$('calcIncome');
     const self=$('selfContribution');
     if(!btn||!self||btn.dataset.employerRateBridge==='1')return;
     btn.dataset.employerRateBridge='1';
 
+    // app.js 原本將雇主提繳固定為 6%。在計算開始前，把高於 6% 的部分暫時併入計算值。
     btn.addEventListener('click',()=>{
-      const original=self.value;
+      originalSelfValue=self.value;
       const employer=rate();
       const personal=selfRate();
-      // app.js 原先把雇主提繳固定為 6%。
-      // 暫時把「超過 6% 的雇主部分」併入計算輸入，讓總提繳率等於雇主實際比例＋個人自提。
       restoring=true;
       self.value=String(personal+(employer-STANDARD_RATE));
       restoring=false;
-      setTimeout(()=>{
-        restoring=true;
-        self.value=original;
-        restoring=false;
-        decoratePensionResult();
-      },0);
     },true);
+
+    // app.js 完成計算後立刻還原使用者看到的自提比例，並把雇主比例補進結果與摘要。
+    btn.addEventListener('click',()=>{
+      if(originalSelfValue!==null){
+        restoring=true;
+        self.value=originalSelfValue;
+        restoring=false;
+        originalSelfValue=null;
+      }
+      decoratePensionResult();
+      decorateSummary();
+    });
   }
 
   installField();
