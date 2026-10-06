@@ -5,6 +5,7 @@
   const num=id=>{const n=parseFloat($(id)?.value);return Number.isFinite(n)?n:0};
   const fmt=n=>new Intl.NumberFormat('zh-TW',{maximumFractionDigits:1}).format(Number.isFinite(n)?n:0);
   const money=n=>new Intl.NumberFormat('zh-TW',{style:'currency',currency:'TWD',maximumFractionDigits:0}).format(Number.isFinite(n)?Math.round(n):0);
+  function toast(text){const t=$('toast');if(!t)return;t.textContent=text;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
 
   // 保留三工具切換的好用邏輯，但建立自己的視覺語言與文案。
   function applyIdentity(){
@@ -104,16 +105,26 @@
       .future-life-brand .metric .v{color:var(--brand-clay-dark)}
       .future-life-brand .focus{border-top-color:var(--brand-line)}
 
-      /* 人生帳本：保留好讀的直式帳本，但改成我們的暖色＋生活階段感。 */
+      /* 人生帳本：保留直式帳本，但把每一項變成更完整的人生責任／目標。 */
       .future-life-brand .income-total-box{background:linear-gradient(135deg,#6f5149,#8f6257);border-radius:16px;box-shadow:0 8px 22px rgba(103,72,61,.13)}
       .future-life-brand .income-total-box strong{font-family:Georgia,"Times New Roman",serif}
       .future-life-brand .inline-money input{border-bottom-color:#e7c787}
       .future-life-brand .inline-money span,.future-life-brand .income-total-box strong em{color:#f3d08f}
       .future-life-brand .ledger-list{border-top-color:#d9c9bd}
-      .future-life-brand .ledger-row{grid-template-columns:48px 1fr 190px;border-bottom-color:#eadfd7;min-height:66px}
+      .future-life-brand .ledger-row{grid-template-columns:48px minmax(0,1fr) 190px;border-bottom-color:#eadfd7;min-height:76px}
       .future-life-brand .ledger-no{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#f4e8df;color:var(--brand-clay);font-size:11px}
-      .future-life-brand .ledger-row>strong{color:#594b45;font-weight:700}
+      .future-life-brand .ledger-name{display:flex;flex-direction:column;gap:2px;min-width:0}
+      .future-life-brand .ledger-name strong{color:#594b45;font-weight:800;font-size:16px}
+      .future-life-brand .ledger-name small{color:#9b8e87;font-size:12px;line-height:1.45}
+      .future-life-brand .ledger-name-edit{min-height:34px;padding:2px 0;font-size:16px;font-weight:800;color:#594b45;border-bottom:1px dashed #d4c3b8;background:transparent}
       .future-life-brand .ledger-input input{border-bottom-color:#cdbfb5}
+      .future-life-brand .life-converter{margin-top:10px;margin-bottom:17px;background:#fffaf6}
+      .future-life-brand .life-converter-grid{display:grid;grid-template-columns:1.2fr .8fr 1fr .7fr;gap:14px;padding:0 14px 8px}
+      .future-life-brand .life-converter .field label{font-size:13px}
+      .future-life-brand .life-converter input,.future-life-brand .life-converter select{min-height:43px;font-size:15px}
+      .future-life-brand .converter-action{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-right:14px}
+      .future-life-brand .converter-action .text-btn{padding-bottom:14px}
+      .future-life-brand #lifeConverterHint{font-size:12px;color:#a09088;padding-bottom:14px}
       .future-life-brand .ledger-sum{border-bottom-color:#8f746a;padding:16px 0}
       .future-life-brand .net-box{border:0;background:linear-gradient(180deg,#f4f0e9,#fffdf9);border-radius:16px;padding:25px 18px;box-shadow:inset 0 0 0 1px #dfd5cb}
       .future-life-brand .net-box small{color:#6f655f}
@@ -142,6 +153,9 @@
       .future-life-brand .summary-section{background:#fffaf6;border-color:var(--brand-line);border-radius:14px}
       .future-life-brand .disclaimer{background:#f1eee9;border-color:#ddd5ce;border-radius:14px}
 
+      @media(max-width:900px){
+        .future-life-brand .life-converter-grid{grid-template-columns:1fr 1fr}
+      }
       @media(max-width:720px){
         .future-life-brand .tool-tabs{position:sticky;top:6px;z-index:30;padding:5px;background:rgba(247,243,238,.9);backdrop-filter:blur(10px);border-radius:16px}
         .future-life-brand .tool-tab{min-height:62px;padding:9px 11px;border-radius:12px}
@@ -149,16 +163,21 @@
         .future-life-brand .tool-tab small{font-size:10px}
         .future-life-brand .tool-panel{padding:26px 17px;border-radius:18px}
         .future-life-brand .panel-heading h2{font-size:25px}
-        .future-life-brand .ledger-row{grid-template-columns:38px 1fr 124px}
+        .future-life-brand .ledger-row{grid-template-columns:38px minmax(0,1fr) 124px}
         .future-life-brand .ledger-input input{width:86px}
         .future-life-brand .income-total-box{border-radius:14px}
+        .future-life-brand .ledger-name small{font-size:11px}
       }
-      @media(max-width:430px){
+      @media(max-width:520px){
+        .future-life-brand .life-converter-grid{grid-template-columns:1fr}
         .future-life-brand .site-head h1{font-size:25px}
         .future-life-brand .tool-tabs{gap:5px}
         .future-life-brand .tool-tab{padding:8px 9px}
         .future-life-brand .tool-tab strong{font-size:13px}
         .future-life-brand .tool-panel{padding:23px 14px}
+        .future-life-brand .ledger-row{grid-template-columns:34px minmax(0,1fr) 102px;gap:7px}
+        .future-life-brand .ledger-input input{width:70px}
+        .future-life-brand .ledger-name strong,.future-life-brand .ledger-name-edit{font-size:14px}
       }
     `;
     document.head.appendChild(style);
@@ -189,10 +208,12 @@
   if(validTools.includes(initial))activateTool(initial,false);
 
   // 人生帳本
-  const expenseIds=['lifeHouse','lifeCar','lifeLiving','lifeWedding','lifeBaby','lifeEducation','lifeParents','lifeTravel'];
+  const expenseIds=['lifeHousing','lifeTransport','lifeLiving','lifeFamilyStart','lifeBaby','lifeEducation','lifeParents','lifeMedical','lifeLeisure','lifeOther'];
   function syncLifeAges(){
     if($('age')?.value && !$('lifeAge')?.value)$('lifeAge').value=$('age').value;
     if($('retireAge')?.value && !$('lifeRetireAge')?.value)$('lifeRetireAge').value=$('retireAge').value;
+    const age=num('lifeAge'),retire=num('lifeRetireAge');
+    if(retire>age && !$('lifeConverterYears')?.value)$('lifeConverterYears').value=retire-age;
   }
   function renderLife(){
     const income=num('lifeIncomeTotal');
@@ -206,22 +227,49 @@
     if(income===0&&expenses===0){
       $('lifeNetHint').textContent='填入收入與人生開銷後，這裡會自動更新。';
     }else if(net<0){
-      $('lifeNetHint').textContent=`目前人生開銷比設定收入多約 ${fmt(Math.abs(net))} 萬元。`;
+      $('lifeNetHint').textContent=`目前人生規劃支出比設定收入多約 ${fmt(Math.abs(net))} 萬元。`;
     }else{
-      $('lifeNetHint').textContent=`扣除目前八項開銷後，約剩 ${fmt(net)} 萬元。`;
+      $('lifeNetHint').textContent=`扣除目前十項人生規劃後，概略還有 ${fmt(net)} 萬元。`;
     }
   }
   ['lifeIncomeTotal',...expenseIds].forEach(id=>$(id)?.addEventListener('input',renderLife));
+
   $('applyLifeIncome')?.addEventListener('click',()=>{
     const monthly=num('lifeMonthlyIncome');
     const age=num('lifeAge');
     const retire=num('lifeRetireAge');
-    if(monthly<=0||age<=0||retire<=age){
-      const t=$('toast');
-      if(t){t.textContent='請先填正確的月收入、目前年齡與退休年齡';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
-      return;
-    }
+    if(monthly<=0||age<=0||retire<=age){toast('請先填正確的月收入、目前年齡與退休年齡');return}
     $('lifeIncomeTotal').value=(monthly*12*(retire-age)/10000).toFixed(1).replace(/\.0$/,'');
+    if(!$('lifeConverterYears').value)$('lifeConverterYears').value=retire-age;
+    renderLife();
+  });
+
+  ['lifeAge','lifeRetireAge'].forEach(id=>$(id)?.addEventListener('input',()=>{
+    const age=num('lifeAge'),retire=num('lifeRetireAge');
+    if(retire>age && !$('lifeConverterYears').value)$('lifeConverterYears').value=retire-age;
+  }));
+
+  function syncOtherName(){
+    const text=String($('lifeOtherName')?.value||'').trim()||'其他人生目標';
+    const option=$('lifeConverterTarget')?.querySelector('option[value="lifeOther"]');
+    if(option)option.textContent=text;
+  }
+  $('lifeOtherName')?.addEventListener('input',syncOtherName);
+  syncOtherName();
+
+  $('applyLifeExpense')?.addEventListener('click',()=>{
+    const target=$('lifeConverterTarget')?.value;
+    const frequency=$('lifeConverterFrequency')?.value;
+    const amount=num('lifeConverterAmount');
+    const years=num('lifeConverterYears');
+    if(!target||amount<=0||years<=0){toast('請先選項目，並填入每期金額與持續年數');return}
+    const periods=frequency==='yearly'?years:years*12;
+    const totalWan=amount*periods/10000;
+    if(!$(target))return;
+    $(target).value=totalWan.toFixed(1).replace(/\.0$/,'');
+    const targetText=$('lifeConverterTarget').selectedOptions[0]?.textContent||'這一項';
+    const freqText=frequency==='yearly'?'每年':'每月';
+    $('lifeConverterHint').textContent=`已將「${targetText}」以${freqText} ${money(amount)} × ${fmt(years)} 年，換算為約 ${fmt(totalWan)} 萬元。`;
     renderLife();
   });
   renderLife();
